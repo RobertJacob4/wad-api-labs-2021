@@ -1,3 +1,5 @@
+import session from 'express-session';
+import authenticate from './authenticate';
 import './db';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -20,8 +22,14 @@ const errHandler = (err, req, res, next) => {
 const app = express();
 
 const port = process.env.PORT;
+app.use(session({
+  secret: 'ilikecake',
+  resave: true,
+  saveUninitialized: true
+}));
 app.use(express.json());
-app.use('/api/movies', moviesRouter);
+//update /api/Movie route
+app.use('/api/movies', authenticate, moviesRouter);
 
 app.use('/api/genres', genresRouter);
 app.use('/api/users', usersRouter);
